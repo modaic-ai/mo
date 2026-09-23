@@ -7,7 +7,7 @@ services:
     shm_size: "16gb"
     environment:
       HF_TOKEN: ${HF_TOKEN:?set HF_TOKEN in .env}
-      MODEL_ID: ${MODEL_ID:-modaic/mo}
+      MODEL_ID: ${MODEL_ID:-modaic/mo-1.1-fp8}
       MODEL_REVISION: ${MODEL_REVISION:-main}
       SERVED_MODEL_NAME: ${SERVED_MODEL_NAME:-mo}
       VLLM_API_KEY: ${VLLM_API_KEY:-}
@@ -31,7 +31,7 @@ services:
       dockerfile: Dockerfile.gateway
     environment:
       HF_TOKEN: ${HF_TOKEN:?set HF_TOKEN in .env}
-      MODEL_ID: ${MODEL_ID:-modaic/mo}
+      MODEL_ID: ${MODEL_ID:-modaic/mo-1.1-fp8}
       MODEL_REVISION: ${MODEL_REVISION:-main}
       SERVED_MODEL_NAME: ${SERVED_MODEL_NAME:-mo}
       VLLM_BASE_URL: http://vllm:8000

@@ -11,7 +11,7 @@ tags:
   - qwen
 ---
 
-# Mo
+# Mo 1.1 FP8
 
 Mo is a merged, specialized decision model derived from
 `Qwen/Qwen3.6-35B-A3B`. It accepts structured state, a question, and labeled
@@ -26,7 +26,7 @@ PEFT adapter at load time.
 The tested runtime is vLLM 0.28.0 on one H100 80 GB:
 
 ```bash
-vllm serve modaic/mo \
+vllm serve modaic/mo-1.1-fp8 \
   --served-model-name mo \
   --trust-remote-code \
   --dtype bfloat16 \

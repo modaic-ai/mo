@@ -11,7 +11,7 @@ probabilities.
 
 ## Validated release
 
-- Intended model repository: `modaic/mo`
+- Model repository: `modaic/mo-1.1-fp8`
 - Base revision: `Qwen/Qwen3.6-35B-A3B@995ad96eacd98c81ed38be0c5b274b04031597b0`
 - Adapter checkpoint: step 3,450
 - Adapter SHA-256: `19947c06e73761754d80aeebd5bd87a455806c34dbe653359aa3105cd02d95b2`
@@ -44,7 +44,7 @@ This starts:
 The vLLM process uses the measured production configuration:
 
 ```text
-vllm serve modaic/mo
+vllm serve modaic/mo-1.1-fp8
   --served-model-name mo
   --tensor-parallel-size 1
   --max-model-len 32768
@@ -140,7 +140,7 @@ Create a private HF repository and upload:
 
 ```bash
 uv run --extra publish modal run publish_hf.py \
-  --repo-id modaic/mo \
+  --repo-id modaic/mo-1.1-fp8 \
   --create \
   --private
 ```

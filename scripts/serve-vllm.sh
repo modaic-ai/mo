@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-: "${MODEL_ID:=modaic/mo}"
+: "${MODEL_ID:=modaic/mo-1.1-fp8}"
 : "${MODEL_REVISION:=main}"
 : "${SERVED_MODEL_NAME:=mo}"
 : "${VLLM_GPU_MEMORY_UTILIZATION:=0.90}"
