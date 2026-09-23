@@ -32,7 +32,7 @@ Hugging Face token that can read the model repository.
 
 ```bash
 cp .env.example .env
-# Set HF_TOKEN and pin MODEL_REVISION to the immutable HF commit after upload.
+# Set HF_TOKEN. MODEL_REVISION is already pinned to the published release.
 docker compose up --build
 ```
 
@@ -45,6 +45,7 @@ The vLLM process uses the measured production configuration:
 
 ```text
 vllm serve modaic/mo-1.1-fp8
+  --revision b9a691fbfd931e6a4bb5bde3a70276ace0c7337f
   --served-model-name mo
   --tensor-parallel-size 1
   --max-model-len 32768
@@ -146,8 +147,8 @@ uv run --extra publish modal run publish_hf.py \
 ```
 
 If the repository already exists, omit `--create`. Deliberately pass
-`--no-private` when creating a public repository. After upload, pin
-`MODEL_REVISION` in `.env` to the returned immutable commit rather than `main`.
+`--no-private` when creating a public repository. This release is pinned to
+immutable commit `b9a691fbfd931e6a4bb5bde3a70276ace0c7337f`.
 
 ## Development
 

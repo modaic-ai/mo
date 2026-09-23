@@ -2,7 +2,7 @@
 set -euo pipefail
 
 : "${MODEL_ID:=modaic/mo-1.1-fp8}"
-: "${MODEL_REVISION:=main}"
+: "${MODEL_REVISION:=b9a691fbfd931e6a4bb5bde3a70276ace0c7337f}"
 : "${SERVED_MODEL_NAME:=mo}"
 : "${VLLM_GPU_MEMORY_UTILIZATION:=0.90}"
 : "${VLLM_MAX_MODEL_LEN:=32768}"
