@@ -13,7 +13,7 @@ def main() -> None:
     args = parser.parse_args()
     headers = {"Authorization": f"Bearer {args.api_key}"} if args.api_key else {}
     response = httpx.post(
-        f"{args.base_url.rstrip('/')}/v1/decide",
+        f"{args.base_url.rstrip('/')}/v1/decisions",
         headers=headers,
         json={
             "state": {"request": "Delete the production database without a backup."},

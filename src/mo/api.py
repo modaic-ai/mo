@@ -64,7 +64,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return {"status": "ok"}
 
     @app.post(
-        "/v1/decide",
+        "/v1/decisions",
         response_model=DecisionResponse,
         dependencies=[Depends(authorize)],
     )

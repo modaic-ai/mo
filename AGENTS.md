@@ -1,5 +1,7 @@
 # Mo repository notes
 
+- For installation, checkpoint selection, serving, and API usage, read
+  `.agents/skills/mo/SKILL.md`.
 - Preserve the exact JSON decision renderer in `src/mo/renderer.py`.
 - Never enable Qwen thinking for decision scoring.
 - Never truncate a state, question, choices, or rendered prompt.
