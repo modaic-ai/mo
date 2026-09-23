@@ -1,0 +1,10 @@
+FROM vllm/vllm-openai:v0.28.0
+
+RUN python3 -m pip install --no-cache-dir \
+    "transformers==5.14.1" \
+    "flashinfer-python"
+
+COPY scripts/serve-vllm.sh /usr/local/bin/serve-vllm
+RUN chmod 0755 /usr/local/bin/serve-vllm
+
+ENTRYPOINT ["/usr/local/bin/serve-vllm"]

@@ -1,0 +1,34 @@
+{
+  "schema_version": "mo_fp8_release_v1",
+  "model_name": "mo",
+  "base_model": "Qwen/Qwen3.6-35B-A3B",
+  "base_revision": "995ad96eacd98c81ed38be0c5b274b04031597b0",
+  "adapter_checkpoint_step": 3450,
+  "adapter_sha256": "19947c06e73761754d80aeebd5bd87a455806c34dbe653359aa3105cd02d95b2",
+  "adapter_merged_max_abs_logit_delta": 0.0,
+  "renderer_contract_sha256": "4a584a39e17e10f063f904398d71631c0d1615d9a5b0b45df6e2887a335588e6",
+  "assistant_prefix": "{\"answer\" : \"",
+  "thinking_enabled": false,
+  "artifact_bytes": 37702513480,
+  "indexed_weight_bytes": 37667035872,
+  "parameters": 35138874736,
+  "shards": 38,
+  "config_sha256": "05c1952302c5cf4c843e128be1918116abc501bf1fdc0615e695462a4099cb80",
+  "weight_index_sha256": "4e6396b31910b520540132f781ebe97b0c8ce82956d2f7e76dd5a5cd47964ad7",
+  "success_sha256": "f96cb5aa3f001443503d7218acee4c682823be4efd03a102be6e1df7e507bedb",
+  "chat_template_sha256": "e84f32a23fdda27689f868aa4a1a5621f41133e51a48d7f3efcbea2839574259",
+  "vllm_version": "0.28.0",
+  "transformers_version": "5.14.1",
+  "decision_index": {
+    "requests": 131980,
+    "fields": 764263,
+    "balanced_raw": 55.94,
+    "balanced_skill": 41.43,
+    "breadth_skill": 39.8
+  },
+  "jevbench": {
+    "rows": 231,
+    "accuracy": 0.8787878787878788,
+    "correctness_auroc": 0.9205665024630542
+  }
+}
