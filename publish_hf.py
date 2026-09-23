@@ -20,6 +20,12 @@ EXPECTED = {
 EXPECTED_SHARDS = 38
 EXPECTED_PARAMETERS = 35_138_874_736
 EXPECTED_WEIGHT_BYTES = 37_667_035_872
+PACKAGED_ASSETS = {
+    "preprocessor_config.json": "5102cc0567b75a34738c5af8e547c00b1faca4ca63c60b1b79acd0423af0ef43",
+    "video_preprocessor_config.json": (
+        "00bd47a5eaaf8760744a12658cd99ba168b818edc4c0a983b90157289c8e546a"
+    ),
+}
 
 app = modal.App("mo-publish-hugging-face")
 volume = modal.Volume.from_name(MODEL_VOLUME)
@@ -28,6 +34,10 @@ image = (
     .pip_install("huggingface-hub>=1.1,<2")
     .add_local_file("hf/README.md", "/opt/mo/README.md")
     .add_local_file("hf/provenance.json", "/opt/mo/provenance.json")
+    .add_local_file("hf/preprocessor_config.json", "/opt/mo/preprocessor_config.json")
+    .add_local_file(
+        "hf/video_preprocessor_config.json", "/opt/mo/video_preprocessor_config.json"
+    )
 )
 
 
@@ -87,6 +97,13 @@ def _verify_source() -> dict[str, object]:
     }
 
 
+def _verify_packaged_assets() -> None:
+    for filename, expected in PACKAGED_ASSETS.items():
+        actual = _sha256(Path("/opt/mo") / filename)
+        if actual != expected:
+            raise RuntimeError(f"packaged processor hash drift for {filename}: {actual}")
+
+
 @app.function(
     image=image,
     volumes={"/models": volume},
@@ -95,12 +112,19 @@ def _verify_source() -> dict[str, object]:
     memory=16_384,
     timeout=24 * 60 * 60,
 )
-def publish(repo_id: str, create: bool, private: bool, revision: str) -> dict[str, object]:
+def publish(
+    repo_id: str,
+    create: bool,
+    private: bool,
+    revision: str,
+    upload_weights: bool,
+) -> dict[str, object]:
     from huggingface_hub import HfApi
 
     if not os.environ.get("HF_TOKEN") and not os.environ.get("HUGGING_FACE_HUB_TOKEN"):
         raise RuntimeError("training-secret must provide HF_TOKEN or HUGGING_FACE_HUB_TOKEN")
     identity = _verify_source()
+    _verify_packaged_assets()
     api = HfApi()
     if create:
         api.create_repo(repo_id=repo_id, repo_type="model", private=private, exist_ok=False)
@@ -110,13 +134,14 @@ def publish(repo_id: str, create: bool, private: bool, revision: str) -> dict[st
             raise RuntimeError(
                 f"repository privacy mismatch: existing private={info.private}, requested={private}"
             )
-    api.upload_large_folder(
-        repo_id=repo_id,
-        repo_type="model",
-        revision=revision,
-        folder_path=SOURCE,
-        num_workers=8,
-    )
+    if upload_weights:
+        api.upload_large_folder(
+            repo_id=repo_id,
+            repo_type="model",
+            revision=revision,
+            folder_path=SOURCE,
+            num_workers=8,
+        )
     card_commit = api.upload_file(
         repo_id=repo_id,
         repo_type="model",
@@ -133,6 +158,17 @@ def publish(repo_id: str, create: bool, private: bool, revision: str) -> dict[st
         path_in_repo="provenance.json",
         commit_message="Add sealed Mo provenance",
     )
+    processor_commits = {
+        filename: api.upload_file(
+            repo_id=repo_id,
+            repo_type="model",
+            revision=revision,
+            path_or_fileobj=f"/opt/mo/{filename}",
+            path_in_repo=filename,
+            commit_message=f"Add pinned {filename}",
+        ).oid
+        for filename in PACKAGED_ASSETS
+    }
     final = api.model_info(repo_id=repo_id, revision=revision)
     return {
         **identity,
@@ -142,6 +178,8 @@ def publish(repo_id: str, create: bool, private: bool, revision: str) -> dict[st
         "commit_sha": final.sha,
         "card_commit": card_commit.oid,
         "provenance_commit": provenance_commit.oid,
+        "processor_commits": processor_commits,
+        "uploaded_weights": upload_weights,
     }
 
 
@@ -151,5 +189,12 @@ def main(
     create: bool = False,
     private: bool = True,
     revision: str = "main",
+    upload_weights: bool = True,
 ) -> None:
-    print(json.dumps(publish.remote(repo_id, create, private, revision), indent=2, sort_keys=True))
+    print(
+        json.dumps(
+            publish.remote(repo_id, create, private, revision, upload_weights),
+            indent=2,
+            sort_keys=True,
+        )
+    )

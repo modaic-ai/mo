@@ -19,6 +19,7 @@ class DecisionRequest(BaseModel):
     state: Any
     question: str = Field(min_length=1)
     options: dict[str, Any]
+    images: list[str] = Field(default_factory=list)
 
 
 class DecisionResponse(BaseModel):
@@ -31,6 +32,8 @@ class DecisionResponse(BaseModel):
     input_tokens: int
     normal_prompt_sha256: str
     partial_prompt_sha256: str
+    image_sha256: list[str]
+    request_sha256: str
     usage: dict[str, Any] | None = None
 
 
@@ -75,7 +78,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 state=request.state,
                 question=request.question,
                 options=request.options,
+                image_data_urls=tuple(request.images),
                 max_model_len=config.max_model_len,
+                max_images=config.max_images,
+                max_image_bytes=config.max_image_bytes,
             )
             result = await score_decision(
                 app.state.client,
@@ -91,9 +97,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             output={"answer": result["answer"]},
             probabilities=result["probabilities"],
             logprobs=result["logprobs"],
-            input_tokens=rendered.input_tokens,
+            input_tokens=result["input_tokens"],
             normal_prompt_sha256=rendered.normal_prompt_sha256,
             partial_prompt_sha256=rendered.partial_prompt_sha256,
+            image_sha256=list(rendered.image_sha256),
+            request_sha256=rendered.request_sha256,
             usage=result["usage"],
         )
 

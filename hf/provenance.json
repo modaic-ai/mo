@@ -19,6 +19,11 @@
   "weight_index_sha256": "4e6396b31910b520540132f781ebe97b0c8ce82956d2f7e76dd5a5cd47964ad7",
   "success_sha256": "f96cb5aa3f001443503d7218acee4c682823be4efd03a102be6e1df7e507bedb",
   "chat_template_sha256": "e84f32a23fdda27689f868aa4a1a5621f41133e51a48d7f3efcbea2839574259",
+  "preprocessor_config_sha256": "5102cc0567b75a34738c5af8e547c00b1faca4ca63c60b1b79acd0423af0ef43",
+  "video_preprocessor_config_sha256": "00bd47a5eaaf8760744a12658cd99ba168b818edc4c0a983b90157289c8e546a",
+  "multimodal_inputs": [
+    "image"
+  ],
   "vllm_version": "0.28.0",
   "transformers_version": "5.14.1",
   "decision_index": {

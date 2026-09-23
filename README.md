@@ -23,7 +23,7 @@ fields.
 
 | Checkpoint | Best hardware | Immutable revision |
 |---|---|---|
-| [`modaic/mo-1.1-fp8`](https://huggingface.co/modaic/mo-1.1-fp8) | H100/H200 | `b9a691fbfd931e6a4bb5bde3a70276ace0c7337f` |
+| [`modaic/mo-1.1-fp8`](https://huggingface.co/modaic/mo-1.1-fp8) | H100/H200 | `60cd2356f6f4e9ec83967aa4f484c26a81f08b88` |
 | [`modaic/mo-1.1-nvfp4`](https://huggingface.co/modaic/mo-1.1-nvfp4) | B100/B200 | `0f910fab893527b89334141af6b463bb1075f2a2` |
 
 Use FP8 on an H100. NVFP4 also loads on H100, but vLLM uses its Marlin
@@ -86,6 +86,29 @@ Request:
 }
 ```
 
+For a multimodal decision, add up to four images as base64 data URLs. Remote
+URLs are intentionally rejected so the deployment never fetches untrusted
+network resources:
+
+```json
+{
+  "state": {"task": "Inspect the attached image."},
+  "question": "Which color fills the square?",
+  "options": {"A": "red", "B": "blue"},
+  "images": ["data:image/png;base64,iVBORw0KGgo..."]
+}
+```
+
+Supported image types are PNG, JPEG, GIF, and WebP. Each decoded image may be
+at most 20 MiB. The gateway sends the structured conversation to vLLM's
+`/v1/chat/completions` endpoint with thinking disabled, continues the exact
+JSON prefix, and constrains generation to one option-label token.
+
+The pinned FP8 revision was validated end to end on one H100 80 GB: a red
+square selected `A` with 99.933% probability, a blue square selected `B` with
+99.914%, and the text-only regression request remained correct. H200 is not
+required for this serving configuration.
+
 Response:
 
 ```json
@@ -102,4 +125,5 @@ Run the installed smoke client against a live endpoint:
 
 ```bash
 mo-smoke --base-url http://localhost:8080
+mo-smoke --base-url http://localhost:8080 --image ./example.png
 ```
