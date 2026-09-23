@@ -10,7 +10,7 @@ both the selected answer and normalized probabilities.
 
 ## Benchmarks
 
-| Checkpoint | Public JevBench | Decision Index raw | Balanced skill | Breadth skill |
+| Checkpoint | [Public JevBench](https://github.com/fstandhartinger/jevbench) | [Decision Index raw](https://huggingface.co/spaces/multimodalart/jev-decision-index) | Balanced skill | Breadth skill |
 |---|---:|---:|---:|---:|
 | [FP8](https://huggingface.co/modaic/mo-1.1-fp8) | 203/231 (87.88%) | 55.94 | 41.43 | 39.80 |
 | [NVFP4](https://huggingface.co/modaic/mo-1.1-nvfp4) | 204/231 (88.31%) | 55.22 | 40.40 | 38.86 |
